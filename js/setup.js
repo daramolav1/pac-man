@@ -1,23 +1,13 @@
-function generateBoundaries() {
-  const map = [
-    ["1", "-", "-", "-", "-", "-", "-", "-", "-", "-", "2"],
-    ["|", ".", ".", ".", ".", ".", ".", ".", ".", ".", "|"],
-    ["|", ".", "b", ".", "[", "7", "]", ".", "b", ".", "|"],
-    ["|", ".", ".", ".", ".", "_", ".", ".", ".", ".", "|"],
-    ["|", ".", "[", "]", ".", ".", ".", "[", "]", ".", "|"],
-    ["|", ".", ".", ".", ".", "^", ".", ".", ".", ".", "|"],
-    ["|", ".", "b", ".", "[", "+", "]", ".", "b", ".", "|"],
-    ["|", ".", ".", ".", ".", "_", ".", ".", ".", ".", "|"],
-    ["|", ".", "[", "]", ".", ".", ".", "[", "]", ".", "|"],
-    ["|", ".", ".", ".", ".", "^", ".", ".", ".", ".", "|"],
-    ["|", ".", "b", ".", "[", "5", "]", ".", "b", ".", "|"],
-    ["|", ".", ".", ".", ".", ".", ".", ".", ".", "p", "|"],
-    ["4", "-", "-", "-", "-", "-", "-", "-", "-", "-", "3"],
-  ];
-
+function generateBoundaries(currentLevelIndex, maps) {
   const boundaries = [];
 
-  map.forEach((row, i) => {
+  const MAP_ROWS = maps[currentLevelIndex].length;
+  const MAP_COLUMNS = maps[currentLevelIndex][0].length;
+
+  canvas.width = Boundary.width * MAP_COLUMNS;
+  canvas.height = Boundary.height * MAP_ROWS;
+
+  maps[currentLevelIndex].forEach((row, i) => {
     row.forEach((symbol, j) => {
       switch (symbol) {
         case "-":
@@ -27,7 +17,7 @@ function generateBoundaries() {
                 x: Boundary.width * j,
                 y: Boundary.height * i,
               },
-              image: createImage("./images/pipeHorizontal.png"),
+              image: createImage("./images/map/pipeHorizontal.png"),
             })
           );
           break;
@@ -38,7 +28,7 @@ function generateBoundaries() {
                 x: Boundary.width * j,
                 y: Boundary.height * i,
               },
-              image: createImage("./images/pipeVertical.png"),
+              image: createImage("./images/map/pipeVertical.png"),
             })
           );
           break;
@@ -49,7 +39,7 @@ function generateBoundaries() {
                 x: Boundary.width * j,
                 y: Boundary.height * i,
               },
-              image: createImage("./images/pipeCorner1.png"),
+              image: createImage("./images/map/pipeCorner1.png"),
             })
           );
           break;
@@ -60,7 +50,7 @@ function generateBoundaries() {
                 x: Boundary.width * j,
                 y: Boundary.height * i,
               },
-              image: createImage("./images/pipeCorner2.png"),
+              image: createImage("./images/map/pipeCorner2.png"),
             })
           );
           break;
@@ -71,7 +61,7 @@ function generateBoundaries() {
                 x: Boundary.width * j,
                 y: Boundary.height * i,
               },
-              image: createImage("./images/pipeCorner3.png"),
+              image: createImage("./images/map/pipeCorner3.png"),
             })
           );
           break;
@@ -82,7 +72,7 @@ function generateBoundaries() {
                 x: Boundary.width * j,
                 y: Boundary.height * i,
               },
-              image: createImage("./images/pipeCorner4.png"),
+              image: createImage("./images/map/pipeCorner4.png"),
             })
           );
           break;
@@ -93,7 +83,7 @@ function generateBoundaries() {
                 x: Boundary.width * j,
                 y: Boundary.height * i,
               },
-              image: createImage("./images/block.png"),
+              image: createImage("./images/map/block.png"),
             })
           );
           break;
@@ -104,7 +94,7 @@ function generateBoundaries() {
                 x: j * Boundary.width,
                 y: i * Boundary.height,
               },
-              image: createImage("./images/capLeft.png"),
+              image: createImage("./images/map/capLeft.png"),
             })
           );
           break;
@@ -115,7 +105,7 @@ function generateBoundaries() {
                 x: j * Boundary.width,
                 y: i * Boundary.height,
               },
-              image: createImage("./images/capRight.png"),
+              image: createImage("./images/map/capRight.png"),
             })
           );
           break;
@@ -126,7 +116,7 @@ function generateBoundaries() {
                 x: j * Boundary.width,
                 y: i * Boundary.height,
               },
-              image: createImage("./images/capBottom.png"),
+              image: createImage("./images/map/capBottom.png"),
             })
           );
           break;
@@ -137,7 +127,7 @@ function generateBoundaries() {
                 x: j * Boundary.width,
                 y: i * Boundary.height,
               },
-              image: createImage("./images/capTop.png"),
+              image: createImage("./images/map/capTop.png"),
             })
           );
           break;
@@ -148,7 +138,7 @@ function generateBoundaries() {
                 x: j * Boundary.width,
                 y: i * Boundary.height,
               },
-              image: createImage("./images/pipeCross.png"),
+              image: createImage("./images/map/pipeCross.png"),
             })
           );
           break;
@@ -160,7 +150,7 @@ function generateBoundaries() {
                 y: i * Boundary.height,
               },
               color: "blue",
-              image: createImage("./images/pipeConnectorTop.png"),
+              image: createImage("./images/map/pipeConnectorTop.png"),
             })
           );
           break;
@@ -172,7 +162,7 @@ function generateBoundaries() {
                 y: i * Boundary.height,
               },
               color: "blue",
-              image: createImage("./images/pipeConnectorRight.png"),
+              image: createImage("./images/map/pipeConnectorRight.png"),
             })
           );
           break;
@@ -184,7 +174,7 @@ function generateBoundaries() {
                 y: i * Boundary.height,
               },
               color: "blue",
-              image: createImage("./images/pipeConnectorBottom.png"),
+              image: createImage("./images/map/pipeConnectorBottom.png"),
             })
           );
           break;
@@ -195,7 +185,7 @@ function generateBoundaries() {
                 x: j * Boundary.width,
                 y: i * Boundary.height,
               },
-              image: createImage("./images/pipeConnectorLeft.png"),
+              image: createImage("./images/map/pipeConnectorLeft.png"),
             })
           );
           break;
@@ -216,6 +206,17 @@ function generateBoundaries() {
                 x: j * Boundary.width + Boundary.width / 2,
                 y: i * Boundary.height + Boundary.height / 2,
               },
+            })
+          );
+          break;
+        case "i":
+          items.push(
+            new Item({
+              position: {
+                x: j * Boundary.width + Boundary.width / 2,
+                y: i * Boundary.height + Boundary.height / 2,
+              },
+              imgSrc: "./images/sprites/cherry.png",
             })
           );
           break;

@@ -1,3 +1,6 @@
+const SPEED = 200;
+const CHOMP_RATE = 30;
+
 class Pacman {
   constructor({ position, velocity }) {
     this.position = position;
@@ -6,6 +9,11 @@ class Pacman {
     this.radians = 0.75;
     this.openRate = 0.12;
     this.rotation = 0;
+    this.desiredDirection = {
+      x: 0,
+      y: 0,
+    };
+    this.state = "active";
   }
 
   draw() {
@@ -28,87 +36,143 @@ class Pacman {
     context.restore();
   }
 
-  moveUp(boundaries) {
-    for (let i = 0; i < boundaries.length; i++) {
-      const boundary = boundaries[i];
-
-      if (
-        collisionWithBoundary({
-          circle: { ...this, velocity: { x: 0, y: -5 } },
-          rectangle: boundary,
-        })
-      ) {
-        this.velocity.y = 0;
+  move(direction) {
+    switch (direction) {
+      case "up":
+        this.desiredDirection = {
+          x: 0,
+          y: -1,
+        };
         break;
-      } else {
-        this.velocity.y = -5;
-      }
+      case "down":
+        this.desiredDirection = {
+          x: 0,
+          y: 1,
+        };
+        break;
+      case "left":
+        this.desiredDirection = {
+          x: -1,
+          y: 0,
+        };
+        break;
+      case "right":
+        this.desiredDirection = {
+          x: 1,
+          y: 0,
+        };
+        break;
     }
   }
 
-  moveLeft(boundaries) {
-    for (let i = 0; i < boundaries.length; i++) {
-      const boundary = boundaries[i];
-
+  collision(boundaries) {
+    for (const boundary of boundaries) {
       if (
         collisionWithBoundary({
-          circle: { ...this, velocity: { x: -5, y: 0 } },
+          circle: this,
           rectangle: boundary,
         })
       ) {
-        this.velocity.x = 0;
-        break;
-      } else {
-        this.velocity.x = -5;
+        return true;
       }
     }
+    return false;
   }
 
-  moveDown(boundaries) {
-    for (let i = 0; i < boundaries.length; i++) {
-      const boundary = boundaries[i];
+  snapToGrid() {
+    const CELL_SIZE = 20;
 
+    this.position = {
+      x: Math.round(this.position.x / CELL_SIZE) * CELL_SIZE,
+      y: Math.round(this.position.y / CELL_SIZE) * CELL_SIZE,
+    };
+  }
+
+  isValidMove(boundaries) {
+    const PIXEL_BUFFER = 5;
+
+    for (const boundary of boundaries) {
       if (
         collisionWithBoundary({
-          circle: { ...this, velocity: { x: 0, y: 5 } },
+          circle: {
+            ...this,
+            velocity: {
+              x: this.desiredDirection.x * PIXEL_BUFFER,
+              y: this.desiredDirection.y * PIXEL_BUFFER,
+            },
+          },
           rectangle: boundary,
         })
       ) {
-        this.velocity.y = 0;
-        break;
-      } else {
-        this.velocity.y = 5;
+        return false;
       }
     }
+    return true;
   }
 
-  moveRight(boundaries) {
-    for (let i = 0; i < boundaries.length; i++) {
-      const boundary = boundaries[i];
-
-      if (
-        collisionWithBoundary({
-          circle: { ...this, velocity: { x: 5, y: 0 } },
-          rectangle: boundary,
-        })
-      ) {
-        this.velocity.x = 0;
-        break;
-      } else {
-        this.velocity.x = 5;
-      }
+  movePlayerWithInput(delta, boundaries) {
+    if (this.isValidMove(boundaries)) {
+      this.velocity.x = this.desiredDirection.x;
+      this.velocity.y = this.desiredDirection.y;
     }
+
+    if (this.collision(boundaries)) {
+      this.velocity.y = 0;
+      this.velocity.x = 0;
+      this.snapToGrid();
+    } else {
+      this.position.x += this.velocity.x * delta * SPEED;
+      this.position.y += this.velocity.y * delta * SPEED;
+    }
+
+    if (this.radians < 0 || this.radians > 0.75) this.openRate = -this.openRate;
+
+    this.radians = Math.max(0, Math.min(this.radians, 0.75));
+    this.radians += this.openRate * delta * CHOMP_RATE;
+
+    this.checkTransportOnVerticalAxis();
+    this.checkTransportOnHorizontalAxis();
   }
 
-  update() {
+  checkTransportOnVerticalAxis() {
+    if (this.position.y + this.radius < 0) this.position.y = canvas.height;
+    else if (this.position.y - this.radius > canvas.height) this.position.y = 0;
+  }
+
+  checkTransportOnHorizontalAxis() {
+    if (this.position.x + this.radius < 0) this.position.x = canvas.width;
+    else if (this.position.x - this.radius > canvas.width) this.position.x = 0;
+  }
+
+  die(lives, game) {
+    Howler.stop();
+    sound.die.play();
+    this.state = "initDeath";
+    gsap.to(this, {
+      radians: Math.PI - 0.00001,
+      onComplete: () => {
+        setTimeout(() => {
+          if (lives > 0) {
+            game.init();
+            game.initStart();
+          } else {
+            game.end();
+          }
+        }, 750);
+      },
+    });
+  }
+
+  update(delta, boundaries) {
     this.draw();
-    this.position.x += this.velocity.x;
-    this.position.y += this.velocity.y;
 
-    if (this.radians < 0 || this.radians > 0.75) {
-      this.openRate = -this.openRate;
+    switch (this.state) {
+      case "active":
+        this.movePlayerWithInput(delta, boundaries);
+        break;
+      case "initDeath":
+        this.state = "death";
+        break;
     }
-
-    this.radians += this.openRate;
   }
 }

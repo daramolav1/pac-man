@@ -4,19 +4,105 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="style.css" type="text/css" />
   </head>
   <body>
-    <p>
+    <p class="flex items-center justify-evenly m-5">
       <span>Score: <span id="scoreEl">0</span> </span>
+
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        id="pauseButton"
+        class="w-5 h-5 cursor-pointer hidden"
+      >
+        <path
+          fill-rule="evenodd"
+          d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12ZM9 8.25a.75.75 0 0 0-.75.75v6c0 .414.336.75.75.75h.75a.75.75 0 0 0 .75-.75V9a.75.75 0 0 0-.75-.75H9Zm5.25 0a.75.75 0 0 0-.75.75v6c0 .414.336.75.75.75H15a.75.75 0 0 0 .75-.75V9a.75.75 0 0 0-.75-.75h-.75Z"
+          clip-rule="evenodd"
+        />
+      </svg>
     </p>
-    <canvas></canvas>
+    <div class="relative">
+      <div class="absolute inset-0 flex flex-col items-center justify-center">
+        <div
+          id="startScreen"
+          class="bg-black/75 p-4 border-4 border-yellow-400 rounded text-center max-w-xs w-full"
+        >
+          <h1 class="text-white text-3xl mb-2">Pac-Man</h1>
+          <button
+            id="startButton"
+            class="text-black text-sm bg-yellow-400 px-4 py-2 rounded-full hover:bg-yellow-300"
+          >
+            Start Game
+          </button>
+        </div>
+
+        <div
+          id="endScreen"
+          class="bg-black/75 p-4 border-4 border-yellow-400 rounded text-center max-w-xs w-full hidden"
+        >
+          <p class="text-white text-xs mb-2">Game Over</p>
+          <p class="text-white text-[10px] mb-2">Score:</p>
+          <h1 id="gameOverScoreLabel" class="text-white text-3xl mb-2"></h1>
+          <button
+            id="restartButton"
+            class="text-black text-xs bg-yellow-400 px-4 py-2 rounded-full hover:bg-yellow-300"
+          >
+            Restart Game
+          </button>
+        </div>
+
+        <div
+          id="readyTag"
+          class="bg-black/75 p-4 border-4 border-yellow-400 rounded text-center max-w-xs w-full hidden"
+        >
+          <h1 class="text-white text-xl">Ready?</h1>
+        </div>
+
+        <div
+          id="goTag"
+          class="bg-black/75 p-4 border-4 border-yellow-400 rounded text-center max-w-xs w-full hidden"
+        >
+          <h1 class="text-white text-xl">Go!</h1>
+        </div>
+      </div>
+      <canvas></canvas>
+      <p class="flex items-center justify-center m-5">
+        <span id="liveCounter" class="hidden"
+          >Lives: <span id="liveEl">3</span></span
+        >
+      </p>
+    </div>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"
+      integrity="sha512-xi/RZRIF/S0hJ+yJJYuZ5yk6/8pCiRlEXZzoguSMl+vk2i3m6UjUO/WcZ11blRL/O+rnj94JRGwt/CHbc9+6EA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"
+      integrity="sha512-16esztaSRplJROstbIIdwX3N97V1+pZvV33ABoG1H2OyTttBxEGkTsoIVsiP1iaTtM8b3+hu2kB6pQ4Clr5yug=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="./js/audio.js"></script>
     <script src="./js/utils.js"></script>
     <script src="./js/classes/Boundary.js"></script>
     <script src="./js/classes/Pacman.js"></script>
     <script src="./js/classes/Ghost.js"></script>
     <script src="./js/classes/Pellet.js"></script>
     <script src="./js/classes/PowerUp.js"></script>
+    <script src="./js/classes/Item.js"></script>
     <script src="./js/eventListeners.js"></script>
     <script src="./js/setup.js"></script>
     <script src="script.js"></script>
